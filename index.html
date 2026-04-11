@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camber — Tasks that race from your notch</title>
+  <meta name="description" content="A notch-native F1-themed todo app for macOS. Tasks as race cars. Progress as position.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600;1,700;1,800&family=Nunito+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&display=swap" rel="stylesheet">
+ <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0c0c0b;
+      --white: #fafaf8;
+      --off: #f2f1ed;
+      --mid: #e4e2db;
+      --muted: #9b9891;
+      --dim: #c5c2b8;
+      --red: #e8002d;
+      --red-dim: rgba(232,0,45,0.12);
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'Nunito Sans', sans-serif;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--white);
+      color: var(--black);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─────────────── NAV ─────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 58px;
+      background: rgba(250,250,248,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--mid);
+      transition: border-color 0.3s;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .nav-logo-text {
+      font-family: var(--serif);
+      font-size: 20px;
+      color: var(--black);
+      letter-spacing: -0.3px;
+    }
+
+    .nav-logo-text span { color: var(--red); }
+
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 2px;
+    }
+
+    .nav-links a {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--black); background: var(--off); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-ghost {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--black);
+      text-decoration: none;
+      border: 1px solid var(--mid);
+      border-radius: 7px;
+      padding: 7px 16px;
+      transition: all 0.15s;
+      font-family: var(--sans);
+      cursor: pointer;
+    }
+
+    .btn-ghost:hover { background: var(--off); border-color: var(--dim); }
+
+    .btn-primary {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      background: var(--black);
+      text-decoration: none;
+      border-radius: 7px;
+      padding: 8px 18px;
+      font-family: var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { background: #1c1c1b; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+
+    /* ─────────────── HERO ─────────────── */
+    .hero {
+      padding-top: 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 60px 40px 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--off);
+      border: 1px solid var(--mid);
+      border-radius: 20px;
+      padding: 5px 14px;
+      margin-bottom: 32px;
+    }
+
+    .hero-badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--red);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-family: dm serif display;
+      font-size: clamp(40px, 6vw, 76px);
+      line-height: 1.02;
+      letter-spacing: -1.5px;
+      color: var(--black);
+      margin-bottom: 28px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--red);
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .btn-download {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      background: var(--black);
+      text-decoration: none;
+      border-radius: 9px;
+      padding: 13px 28px;
+      font-family: var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-download:hover { background: #1c1c1b; transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.18); }
+
+    .btn-secondary {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      background: transparent;
+      text-decoration: none;
+      border-radius: 9px;
+      padding: 13px 24px;
+      border: 1.5px solid var(--mid);
+      font-family: var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover { border-color: var(--black); background: var(--off); }
+
+    /* ─────────────── HERO VIDEO FRAME ─────────────── */
+    .hero-visual-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-visual-glow {
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse at center, rgba(232,0,45,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-visual-frame {
+      background: var(--black);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.1);
+      aspect-ratio: 16/9;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
+      transform: translateZ(0); /* Force GPU render for safe border-radius clipping */
+    }
+
+    /* macOS Window Title Bar */
+    .macos-titlebar {
+      height: 38px;
+      background: #1e1e1e;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #111;
+      position: relative;
+      z-index: 3;
+    }
+
+    .macos-dot {
+      width: 11.5px;
+      height: 11.5px;
+      border-radius: 50%;
+    }
+    
+    .macos-dot.close { background: #ff5f56; }
+    .macos-dot.min { background: #ffbd2e; }
+    .macos-dot.max { background: #27c93f; }
+
+    /* Video styling */
+    .hero-video {
+      width: 100%;
+      flex: 1;
+      object-fit: cover;
+      object-position: center;
+      background: #000;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── Reusable macOS Window Mockup (bento + how-it-works) ─── */
+    .window-mockup {
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      transform: translateZ(0); /* Safe border-radius clipping */
+    }
+
+    .window-titlebar {
+      height: 28px;
+      background: #1c1c1c;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      gap: 6px;
+      flex-shrink: 0;
+      border-bottom: 1px solid #111;
+    }
+
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .window-dot.close { background: #ff5f56; }
+    .window-dot.min   { background: #ffbd2e; }
+    .window-dot.max   { background: #27c93f; }
+
+    .window-video {
+      width: 100%;
+      display: block;
+      background: #000;
+      flex: 1;
+      object-fit: cover;
+    }
+
+    /* ─────────────── DIVIDER ─────────────── */
+    .section-divider {
+      height: 1px;
+      background: var(--mid);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ─────────────── SECTION BASE ─────────────── */
+    .section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 100px 40px;
+    }
+
+    .section-sm {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 72px 40px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .section-heading {
+      font-family: var(--serif);
+      font-size: clamp(34px, 4.5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -0.6px;
+    }
+
+    .section-heading em { font-style: italic; color: var(--red); }
+
+    .section-body {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 460px;
+    }
+
+    /* ─────────────── BENTO GRID ─────────────── */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 56px;
+    }
+
+    .bento-card {
+      background: var(--off);
+      border: 1px solid var(--mid);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+    }
+
+    .bento-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+
+    /* Card layouts */
+    .bc-1 { grid-column: span 2; height: 240px; overflow: hidden; }
+       .bc-9 { grid-column: span 1; min-height: 240px; }
+    .bc-7 { grid-column: span 1; min-height: 240px; }
+    .bc-8 { grid-column: span 1; min-height: 240px; }
+    .bc-3 { grid-column: span 1; min-height: 240px; }
+        .bc-2 { grid-column: span 3; height: 280px; overflow: hidden; }
+
+    .bento-card-inner {
+      padding: 28px 28px 24px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .bc-split-inner {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;   /* children fill the card height */
+      justify-content: space-between;
+      gap: 0;
+      height: 100%;           /* fill the fixed card height */
+      padding: 0;             /* remove internal padding so visual bleeds edge */
+    }
+
+    .bc-split-text {
+      flex: 1; /* let specifics override */
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .bc-1 .bc-split-text { flex: 0 0 50%; max-width: 50%; }
+    .bc-2 .bc-split-text { flex: 0 0 40%; max-width: 40%; }
+
+    .bc-split-visual-1 {
+      flex: 0 0 50%;
+      max-width: 50%;
+      overflow: hidden;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .bc-split-visual-2 {
+      flex: 0 0 60%;
+      max-width: 60%;
+      overflow: hidden;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+      padding: 40px;
+    }
+
+    .bc-split-visual-1 .window-mockup {
+      width: auto;
+      height: auto;
+      aspect-ratio: 3/2;
+      max-height: 100%;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+
+    .bc-split-visual-2 .window-mockup {
+width: auto;
+      height: auto;
+      aspect-ratio: 16/9;
+      max-height: 100%;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    .bento-card-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .bento-card-title {
+      font-family: var(--serif);
+      font-size: 22px;
+      line-height: 1.2;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+
+    .bento-card-title em { font-style: italic; color: var(--red); }
+
+    .bento-card-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* Card: Notch-native visual */
+    .bc-notch-viz {
+      background: var(--black);
+      padding: 20px;
+      flex: 1;
+      border-radius: 8px;
+      margin-top: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bc-notch-bar {
+      height: 24px;
+      background: #080808;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bc-notch-pill2 {
+      width: 60px;
+      height: 14px;
+      background: #000;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .bc-popover {
+      background: #161614;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 2px;
+      position: relative;
+    }
+
+    .bc-popover-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .bc-popover-row:last-child { border-bottom: none; }
+
+    .bc-mini-car {
+      width: 10px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .bc-popover-task {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      font-weight: 400;
+      flex: 1;
+    }
+
+    .bc-popover-bar {
+      width: 60px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .bc-popover-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    /* Card: keyboard shortcuts mini display */
+    .bc-shortcuts {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bc-shortcut-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .bc-shortcut-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .bc-kbd-group {
+      display: flex;
+      gap: 3px;
+    }
+
+    kbd {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--white);
+      border: 1px solid var(--mid);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--black);
+      box-shadow: 0 1px 0 var(--mid);
+    }
+
+    /* Card: privacy dark */
+    .bento-card.dark-card {
+      background: var(--black);
+      border-color: #1e1e1c;
+    }
+
+    .dark-card .bento-card-title { color: var(--white); }
+    .dark-card .bento-card-desc { color: rgba(255,255,255,0.4); }
+    .dark-card .bento-card-label { color: rgba(255,255,255,0.3); }
+
+    /* Card: constructor strip */
+    .bc-constructors-strip {
+      display: flex;
+      gap: 6px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .bc-constructor-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--white);
+      border: 1px solid var(--mid);
+      border-radius: 20px;
+      padding: 4px 10px 4px 7px;
+    }
+
+    .bc-c-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    .bc-c-name {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--black);
+      white-space: nowrap;
+    }
+
+    /* Card: finish celebration */
+    .bc-finish-anim {
+      text-align: center;
+      padding: 20px 0 10px;
+      position: relative;
+    }
+
+    .bc-finish-flag {
+      font-size: 40px;
+      display: block;
+      animation: wave-flag 1.5s ease-in-out infinite;
+    }
+
+    @keyframes wave-flag {
+      0%, 100% { transform: rotate(-5deg) scale(1); }
+      50% { transform: rotate(5deg) scale(1.05); }
+    }
+
+    .bc-confetti-dot {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      animation: float-confetti 2s ease-in-out infinite;
+    }
+
+    @keyframes float-confetti {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      50% { transform: translateY(-15px) rotate(180deg); opacity: 0.6; }
+    }
+
+    /* Card: drag reorder visual */
+    .bc-drag-list {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bc-drag-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border: 1px solid var(--mid);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: grab;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .bc-drag-item.lifted {
+      transform: rotate(-1deg) scale(1.02);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border-color: var(--dim);
+      z-index: 1;
+    }
+
+    .bc-drag-handle {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .bc-drag-handle span {
+      width: 14px;
+      height: 1.5px;
+      background: var(--dim);
+      border-radius: 1px;
+    }
+
+    .bc-drag-task-name {
+      font-size: 12px;
+      font-weight: 500;
+      flex: 1;
+    }
+
+    .bc-drag-progress {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+   
+
+    /* ─────────────── SHORTCUTS ─────────────── */
+    .shortcuts-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--mid);
+      border: 1px solid var(--mid);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-top: 52px;
+    }
+
+    .shortcut-row {
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      transition: background 0.15s;
+    }
+
+    .shortcut-row:hover { background: var(--off); }
+
+    .shortcut-action {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--black);
+    }
+
+    .kbd-group {
+      display: flex;
+      gap: 4px;
+    }
+
+    /* ─────────────── INSTALL ─────────────── */
+    .install-section {
+      background: var(--black);
+      padding: 160px 0;
+    }
+
+    .install-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .install-section .section-label { color: rgba(255,255,255,0.3); }
+    .install-section .section-heading { color: var(--white); }
+    .install-section .section-body { color: rgba(255,255,255,0.45); }
+
+    .install-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .install-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 22px 24px;
+      background: #111;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.15s;
+    }
+
+    .install-step:last-child { border-bottom: none; }
+    .install-step:hover { background: #161614; }
+
+    .install-step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .install-step-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .install-step-desc {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    .install-cta-area {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .btn-download-white {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--black);
+      background: var(--white);
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 15px 32px;
+      font-family: var(--sans);
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      transition: all 0.2s;
+      width: fit-content;
+      cursor: pointer;
+    }
+
+    .btn-download-white:hover { background: var(--off); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+
+    .install-meta {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      line-height: 1.6;
+    }
+
+    /* ─────────────── OPEN SOURCE ─────────────── */
+    .oss-section {
+      background: var(--off);
+      padding: 100px 40px;
+      text-align: center;
+    }
+
+    .oss-inner {
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .oss-inner .section-body {
+      margin: 20px auto 40px;
+      text-align: center;
+      max-width: 420px;
+    }
+
+    .oss-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ─────────────── CONTACT ─────────────── */
+    .feedback-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 100px 40px;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 52px;
+    }
+
+    .contact-card {
+      background: var(--off);
+      border: 1px solid var(--mid);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+      background: var(--white);
+      border-color: var(--dim);
+    }
+
+    .contact-card.dark-card {
+      background: var(--black);
+      color: var(--white);
+      border-color: #1e1e1c;
+    }
+
+    .contact-card.dark-card:hover {
+      background: #111;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.25);
+      border-color: #333;
+    }
+
+    .contact-card.dark-card .contact-desc { color: rgba(255,255,255,0.5); }
+    
+    .contact-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--white);
+      border: 1px solid var(--mid);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      transition: transform 0.3s ease;
+      color: var(--black);
+    }
+
+    .contact-card:hover .contact-icon {
+      transform: scale(1.05);
+    }
+
+    .contact-card.dark-card .contact-icon {
+      background: #1a1a1a;
+      border-color: #333;
+      color: var(--white);
+    }
+
+    .contact-title {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.2px;
+    }
+
+    .contact-desc {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─────────────── FOOTER ─────────────── */
+    footer {
+      border-top: 1px solid var(--mid);
+      padding: 36px 40px;
+    }
+
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .footer-logo img {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+    }
+
+    .footer-logo-text {
+      font-family: var(--serif);
+      font-size: 17px;
+      color: var(--black);
+    }
+
+    .footer-logo-text span { color: var(--red); }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--black); }
+
+    .footer-right {
+      font-size: 12px;
+      color: var(--dim);
+    }
+
+    .footer-right a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-right a:hover { color: var(--black); }
+
+    /* ─────────────── ANIMATIONS ─────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.65s cubic-bezier(0.25,1,0.5,1), transform 0.65s cubic-bezier(0.25,1,0.5,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    .reveal-d3 { transition-delay: 0.24s; }
+    .reveal-d4 { transition-delay: 0.32s; }
+
+    /* Section transition line */
+    .red-rule {
+      width: 32px;
+      height: 2px;
+      background: var(--red);
+      margin-bottom: 20px;
+      border-radius: 1px;
+    }
+
+    /* ─────────────── RESPONSIVE ─────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-center { display: none; }
+      .hero-inner { padding: 50px 20px 0; }
+      .hero-visual-wrap { padding: 0 16px; }
+      .section { padding: 64px 24px; }
+      .section-sm { padding: 48px 24px; }
+      .bento { grid-template-columns: 1fr; }
+      .bc-1, .bc-2, .bc-3, .bc-4, .bc-5, .bc-6, .bc-7, .bc-8, .bc-9 { grid-column: span 1; }
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .shortcuts-list { grid-template-columns: 1fr; }
+      .install-inner { grid-template-columns: 1fr; gap: 48px; }
+      .feedback-grid { grid-template-columns: 1fr; }
+      footer { padding: 28px 20px; }
+      .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+      .footer-left { flex-direction: column; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">
+      <img src="camber-logo.png" alt="Camber">
+    </div>
+    <span class="nav-logo-text">Camber<span>.</span></span>
+  </a>
+
+  <div class="nav-center">
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#shortcuts">Shortcuts</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="#feedback">Feedback</a></li>
+    </ul>
+  </div>
+
+  <div class="nav-right">
+    <a href="https://github.com/puneetk0/camber" class="btn-ghost" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/puneetk0/camber/releases/download/V1.0.0/Camber.dmg" class="btn-primary" target="_blank" rel="noopener">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v7.5M4 7l2.5 2.5L9 7M1.5 11h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+   
+
+    <h1 class="hero-title reveal reveal-d1">
+      Your tasks <em>racing</em><br>
+      from your notch.
+    </h1>
+
+    <div class="hero-actions reveal reveal-d2">
+      <a href="https://github.com/puneetk0/camber/releases/download/V1.0.0/Camber.dmg" class="btn-download" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v9M4.5 8l3 3 3-3M1.5 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download for macOS
+      </a>
+      <a href="https://github.com/puneetk0/camber" class="btn-secondary" target="_blank" rel="noopener">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="currentColor"><path d="M7.5 0C3.36 0 0 3.36 0 7.5c0 3.32 2.15 6.13 5.13 7.12.37.07.51-.16.51-.36 0-.17-.01-.77-.01-1.4-1.88.35-2.37-.46-2.52-.88-.08-.21-.45-.88-.77-1.06-.26-.14-.64-.49-.01-.5.59-.01 1.01.54 1.15.77.67 1.14 1.75.81 2.19.62.07-.49.26-.82.48-1-.67-.08-1.37-.34-1.96-.67-.59-.34-1.09-.82-1.45-1.41-.36-.59-.56-1.27-.56-2 0-.81.29-1.49.77-2.01-.07-.19-.34-.96.07-1.99 0 0 .63-.2 2.06.77.6-.17 1.24-.25 1.88-.25.64 0 1.28.08 1.88.25 1.43-.97 2.06-.77 2.06-.77.41 1.03.15 1.8.07 1.99.48.52.77 1.19.77 2.01 0 2.87-1.75 3.51-3.42 3.7.27.23.51.68.51 1.38 0 1-.01 1.81-.01 2.06 0 .2.14.43.51.36A7.51 7.51 0 0015 7.5C15 3.36 11.64 0 7.5 0z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+  </div>
+
+  <!-- DEMO TRACK VIDEO AREA -->
+  <div class="hero-visual-wrap reveal reveal-d3">
+    <div class="hero-visual-glow"></div>
+    <div class="hero-visual-frame">
+      <!-- macOS Title Bar -->
+      <div class="macos-titlebar">
+        <div class="macos-dot close"></div>
+        <div class="macos-dot min"></div>
+        <div class="macos-dot max"></div>
+      </div>
+
+      <video class="hero-video" autoplay loop muted playsinline controls>
+        <source src="intro_video.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+<div style="height:96px;"></div>
+<div class="section-divider"></div>
+
+<!-- FEATURES BENTO -->
+<section class="section" id="features">
+  <div class="reveal">
+    <div class="section-label">Features</div>
+    <div class="red-rule"></div>
+    <h2 class="section-heading">Everything in<br>one <em>clean grid.</em></h2>
+  </div>
+
+  <div class="bento">
+
+    <!-- Card 1: Notch native — large -->
+    <div class="bento-card bc-1 reveal reveal-d1">
+      <div class="bento-card-inner bc-split-inner">
+        <div class="bc-split-text">
+          <div class="bento-card-label">Always accessible</div>
+          <div class="bento-card-title">Lives in your<br><em>notch.</em></div>
+          <div class="bento-card-desc" style="margin-bottom:0;">Hover the top of your MacBook. The track drops down instantly. Move away and it disappears. Zero friction.</div>
+        </div>
+        <div class="bc-split-visual-1">
+          <div class="window-mockup">
+            <div class="window-titlebar">
+              <div class="window-dot close"></div>
+              <div class="window-dot min"></div>
+              <div class="window-dot max"></div>
+            </div>
+            <video class="window-video" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover;">
+              <source src="hover_the_notch.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Race track view -->
+    <div class="bento-card bc-9 reveal">
+      <div class="bento-card-inner">
+        <div>
+          <div class="bento-card-label">Pin mode</div>
+          <div class="bento-card-title">Lock Camber open while you work. <em style="color:var(--red);">One shortcut.</em></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:24px;">
+          <kbd style="font-size:14px;padding:8px 14px;">⌘</kbd>
+          <kbd style="font-size:14px;padding:8px 14px;">⇧</kbd>
+          <kbd style="font-size:14px;padding:8px 14px;">L</kbd>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7: Constructor grid -->
+    <div class="bento-card bc-7 reveal">
+      <div class="bento-card-inner">
+        <div>
+          <div class="bento-card-label">Ten constructors</div>
+          <div class="bento-card-title">Ten teams. Ten <em>tasks.</em></div>
+          <div class="bento-card-desc">Each F1 constructor gets a lane. Pick your team, own your task.</div>
+        </div>
+        <div class="bc-constructors-strip">
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#3671C6;"></div><span class="bc-c-name">Red Bull</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#E8002D;"></div><span class="bc-c-name">Ferrari</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#FF8000;"></div><span class="bc-c-name">McLaren</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#00D2BE;"></div><span class="bc-c-name">Mercedes</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#006F62;"></div><span class="bc-c-name">Aston Martin</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#FF87BC;"></div><span class="bc-c-name">Alpine</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#005AFF;"></div><span class="bc-c-name">Williams</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#B6BABD;"></div><span class="bc-c-name">Haas</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#6692FF;"></div><span class="bc-c-name">Visa RB</span></div>
+          <div class="bc-constructor-pill"><div class="bc-c-dot" style="background:#52E252;"></div><span class="bc-c-name">Kick Sauber</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 8: Drag reorder -->
+    <div class="bento-card bc-8 reveal reveal-d1">
+      <div class="bento-card-inner">
+        <div>
+          <div class="bento-card-label">Drag & drop</div>
+          <div class="bento-card-title"><em>Rearrange</em> your<br>race on the fly.</div>
+        </div>
+        <div class="bc-drag-list">
+          <div class="bc-drag-item lifted">
+            <div class="bc-drag-handle"><span></span><span></span><span></span></div>
+            <span class="bc-drag-task-name">Design mockups</span>
+            <span class="bc-drag-progress">3/4</span>
+          </div>
+          <div class="bc-drag-item">
+            <div class="bc-drag-handle"><span></span><span></span><span></span></div>
+            <span class="bc-drag-task-name">Write tests</span>
+            <span class="bc-drag-progress">1/6</span>
+          </div>
+          <div class="bc-drag-item">
+            <div class="bc-drag-handle"><span></span><span></span><span></span></div>
+            <span class="bc-drag-task-name">Deploy release</span>
+            <span class="bc-drag-progress">0/3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Local & private — dark -->
+    <div class="bento-card bc-3 dark-card reveal reveal-d3">
+      <div class="bento-card-inner">
+        <div>
+          <div class="bento-card-label">Privacy first</div>
+          <div class="bento-card-title" style="color:#fff;">SQLite.<br>Local. <em style="color:var(--red);">Yours.</em></div>
+          <div class="bento-card-desc">No account. No cloud. No tracking. Your tasks live entirely on your machine.</div>
+        </div>
+        <div style="display:flex;gap:6px;margin-top:16px;">
+          <div style="height:3px;flex:1;background:rgba(255,255,255,0.08);border-radius:2px;"></div>
+          <div style="height:3px;flex:1;background:rgba(255,255,255,0.08);border-radius:2px;"></div>
+          <div style="height:3px;width:24px;background:var(--red);opacity:0.6;border-radius:2px;"></div>
+        </div>
+      </div>
+    </div>
+
+      <div class="bento-card bc-2 reveal reveal-d2">
+      <div class="bento-card-inner bc-split-inner">
+        <div class="bc-split-text">
+          <div class="bento-card-label">Visual progress</div>
+          <div class="bento-card-title">Progress you<br>can <em>see.</em></div>
+          <div class="bento-card-desc" style="margin-bottom:0;">Each lane is a task. Each car is your progress. Position = completion. No words needed.</div>
+        </div>
+        <div class="bc-split-visual-2">
+          <div class="window-mockup">
+            <div class="window-titlebar">
+              <div class="window-dot close"></div>
+              <div class="window-dot min"></div>
+              <div class="window-dot max"></div>
+            </div>
+            <video class="window-video" autoplay loop muted playsinline>
+              <source src="progress.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+
+<!-- SHORTCUTS -->
+<section class="section" id="shortcuts">
+  <div class="reveal">
+    <div class="section-label">Keyboard shortcuts</div>
+    <div class="red-rule"></div>
+    <h2 class="section-heading">Your hands never <br> leave the <em>keys.</em></h2>
+  </div>
+
+  <div class="shortcuts-list reveal reveal-d1">
+    <div class="shortcut-row">
+      <span class="shortcut-action">Toggle Camber open / close</span>
+      <div class="kbd-group"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>P</kbd></div>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">Toggle pin — lock open or release</span>
+      <div class="kbd-group"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>L</kbd></div>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">New task</span>
+      <div class="kbd-group"><kbd>⌘</kbd><kbd>N</kbd></div>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">Save / launch task</span>
+      <div class="kbd-group"><kbd>⌘</kbd><kbd>S</kbd></div>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">Open keyboard shortcuts</span>
+      <div class="kbd-group"><kbd>⌘</kbd><kbd>,</kbd></div>
+    </div>
+    <div class="shortcut-row">
+      <span class="shortcut-action">Go back / close</span>
+      <div class="kbd-group"><kbd>Esc</kbd></div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<div class="install-section" id="install">
+  <div class="install-inner">
+    <div class="install-cta-area reveal">
+      <div>
+        <div class="section-label">Installation</div>
+        <div class="red-rule" style="background:rgba(232,0,45,0.6);"></div>
+        <h2 class="section-heading">Download.<br>Drag. <em>Race.</em></h2>
+        <p class="section-body" style="margin-top:20px;">Ships as a universal binary. Runs natively on Apple Silicon and Intel. No account, no wizard, no fuss.</p>
+      </div>
+      <div>
+        <a href="https://github.com/puneetk0/camber/releases/download/V1.0.0/Camber.dmg" class="btn-download-white" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 8l3 3 3-3M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download for macOS
+        </a>
+      </div>
+    </div>
+
+    <div class="install-steps reveal reveal-d2">
+      <div class="install-step">
+        <div class="install-step-num">1</div>
+        <div>
+          <div class="install-step-title">Download from GitHub Releases</div>
+          <div class="install-step-desc">Grab the latest .dmg from the releases page — always free, always open source.</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">2</div>
+        <div>
+          <div class="install-step-title">Open DMG and drag to Applications</div>
+          <div class="install-step-desc">Standard macOS install. Takes about five seconds.</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">3</div>
+        <div>
+          <div class="install-step-title">First launch: right-click → Open</div>
+          <div class="install-step-desc">This is a one-time step for unsigned apps. After that, Camber opens normally every time.</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">4</div>
+        <div>
+          <div class="install-step-title">Hover the notch</div>
+          <div class="install-step-desc">Your pit lane is ready. Start your engines.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OPEN SOURCE -->
+<div class="oss-section">
+  <div class="oss-inner reveal">
+    <div class="section-label" style="text-align:center;">Open Source</div>
+    <div class="red-rule" style="margin:12px auto 0;"></div>
+    <h2 class="section-heading" style="margin-top:16px;">Built in the open.<br><em>Improved</em> together.</h2>
+    <p class="section-body">Camber is MIT licensed and lives on GitHub. Read the code, file a bug, suggest a feature, or send a pull request. Every constructor needs a team.</p>
+    <div class="oss-actions">
+      <a href="https://github.com/puneetk0/camber" class="btn-download" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Contribute on GitHub
+      </a>
+      <a href="https://github.com/puneetk0/camber/issues" class="btn-secondary" target="_blank" rel="noopener">File an issue</a>
+    </div>
+  </div>
+</div>
+
+<!-- FEEDBACK -->
+<section class="feedback-section" id="feedback">
+  <div class="reveal">
+    <div class="section-label">Get in touch</div>
+    <div class="red-rule"></div>
+    <h2 class="section-heading">We want to hear<br>from <em>you.</em></h2>
+  </div>
+
+  <div class="contact-grid">
+    <!-- Feedback Form Card -->
+    <a href="https://forms.gle/zXyr1iSu3tzUMTTh9" target="_blank" class="contact-card reveal reveal-d1">
+      <div class="contact-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      </div>
+      <div class="contact-title">Leave Feedback</div>
+      <div class="contact-desc">Share your thoughts on Camber. Got a feature idea or found a bug? Let us know.</div>
+    </a>
+
+    <!-- GitHub Card -->
+     <a href="mailto:hello@camber.app" class="contact-card dark-card reveal reveal-d2">
+      <div class="contact-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </div>
+      <div class="contact-title">Email Us</div>
+      <div class="contact-desc">Reach out directly for support, inquiries, or just to say hi. We reply fast!</div>
+    </a>
+
+    <!-- Email Card -->
+
+    <a href="https://github.com/puneetk0/camber" target="_blank" rel="noopener" class="contact-card reveal reveal-d3">
+      <div class="contact-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </div>
+      <div class="contact-title">GitHub</div>
+      <div class="contact-desc">Explore the codebase, file issues, browse pull requests, and contribute safely.</div>
+    </a>
+   
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <a href="/" class="footer-logo">
+        <img src="tray-icon.png" alt="Camber">
+        <span class="footer-logo-text">Camber<span>.</span></span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="https://github.com/puneetk0/camber" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://github.com/puneetk0/camber/releases" target="_blank" rel="noopener">Releases</a></li>
+        <li><a href="#feedback">Feedback</a></li>
+      </ul>
+    </div>
+    <div class="footer-right">
+      Built by <a href="https://github.com/puneetk0" target="_blank" rel="noopener">Puneet Kathuria</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ── Scroll reveal ──
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ── Nav scroll ──
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.style.borderBottomColor = window.scrollY > 20 ? 'var(--mid)' : 'transparent';
+  }, { passive: true });
+
+
+
+</script>
+
+</body>
+</html>
