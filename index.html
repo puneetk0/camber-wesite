@@ -287,7 +287,7 @@
       flex-direction: column;
       position: relative;
       box-shadow: rgba(0, 0, 0, 0.09) 0px 3px 12px;
-      transform: translateZ(0); /* Force GPU render for safe border-radius clipping */
+      transform: translateZ(0);
     }
 
     /* macOS Window Title Bar */
@@ -325,7 +325,7 @@
       z-index: 1;
     }
 
-    /* ─── Reusable macOS Window Mockup (bento + how-it-works) ─── */
+    /* ─── Reusable macOS Window Mockup ─── */
     .window-mockup {
       background: #000;
       border-radius: 10px;
@@ -334,7 +334,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
-      transform: translateZ(0); /* Safe border-radius clipping */
+      transform: translateZ(0);
     }
 
     .window-titlebar {
@@ -437,11 +437,11 @@
 
     /* Card layouts */
     .bc-1 { grid-column: span 2; height: 240px; overflow: hidden; }
-       .bc-9 { grid-column: span 1; min-height: 240px; }
+    .bc-9 { grid-column: span 1; min-height: 240px; }
     .bc-7 { grid-column: span 1; min-height: 240px; }
     .bc-8 { grid-column: span 1; min-height: 240px; }
     .bc-3 { grid-column: span 1; min-height: 240px; }
-        .bc-2 { grid-column: span 3; height: 280px; overflow: hidden; }
+    .bc-2 { grid-column: span 3; height: 280px; overflow: hidden; }
 
     .bento-card-inner {
       padding: 28px 28px 24px;
@@ -454,15 +454,15 @@
     .bc-split-inner {
       display: flex;
       flex-direction: row;
-      align-items: stretch;   /* children fill the card height */
+      align-items: stretch;
       justify-content: space-between;
       gap: 0;
-      height: 100%;           /* fill the fixed card height */
-      padding: 0;             /* remove internal padding so visual bleeds edge */
+      height: 100%;
+      padding: 0;
     }
 
     .bc-split-text {
-      flex: 1; /* let specifics override */
+      flex: 1;
       padding: 48px;
       display: flex;
       flex-direction: column;
@@ -504,7 +504,7 @@
     }
 
     .bc-split-visual-2 .window-mockup {
-width: auto;
+      width: auto;
       height: auto;
       aspect-ratio: 16/9;
       max-height: 100%;
@@ -512,6 +512,7 @@ width: auto;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.12);
     }
+
     .bento-card-label {
       font-size: 11px;
       font-weight: 600;
@@ -771,8 +772,6 @@ width: auto;
       font-size: 11px;
       color: var(--muted);
     }
-
-   
 
     /* ─────────────── SHORTCUTS ─────────────── */
     .shortcuts-list {
@@ -1092,21 +1091,21 @@ width: auto;
     .footer-right a:hover { color: var(--black); }
 
     /* ─────────────── ANIMATIONS ─────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
 
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-.reveal-d1 { transition-delay: 0.06s; }
-.reveal-d2 { transition-delay: 0.12s; }
-.reveal-d3 { transition-delay: 0.18s; }
-.reveal-d4 { transition-delay: 0.24s; }
+    .reveal-d1 { transition-delay: 0.06s; }
+    .reveal-d2 { transition-delay: 0.12s; }
+    .reveal-d3 { transition-delay: 0.18s; }
+    .reveal-d4 { transition-delay: 0.24s; }
 
     /* Section transition line */
     .red-rule {
@@ -1117,23 +1116,365 @@ width: auto;
       border-radius: 1px;
     }
 
-    /* ─────────────── RESPONSIVE ─────────────── */
+    /* ═══════════════════════════════════════════
+       MOBILE STYLES — desktop unchanged above
+       ═══════════════════════════════════════════ */
+
+    /* ── Tablet: 768px and below ── */
     @media (max-width: 768px) {
-      nav { padding: 0 20px; }
+
+      /* NAV */
+      nav {
+        padding: 0 20px;
+        height: 52px;
+      }
+
       .nav-center { display: none; }
-      .hero-inner { padding: 50px 20px 0; }
-      .hero-visual-wrap { padding: 0 16px; }
-      .section { padding: 64px 24px; }
-      .section-sm { padding: 48px 24px; }
-      .bento { grid-template-columns: 1fr; }
-      .bc-1, .bc-2, .bc-3, .bc-4, .bc-5, .bc-6, .bc-7, .bc-8, .bc-9 { grid-column: span 1; }
-      .steps-grid { grid-template-columns: 1fr 1fr; }
-      .shortcuts-list { grid-template-columns: 1fr; }
-      .install-inner { grid-template-columns: 1fr; gap: 48px; }
-      .feedback-grid { grid-template-columns: 1fr; }
-      footer { padding: 28px 20px; }
-      .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
-      .footer-left { flex-direction: column; gap: 16px; }
+
+      .btn-ghost { display: none; } /* hide GitHub text link, keep Download */
+
+      .btn-primary {
+        font-size: 12px;
+        padding: 7px 14px;
+      }
+
+      /* HERO */
+      .hero {
+        padding-top: 80px;
+      }
+
+      .hero-inner {
+        padding: 40px 20px 0;
+      }
+
+      .hero-title {
+        font-size: clamp(36px, 10vw, 56px);
+        letter-spacing: -1px;
+        margin-bottom: 24px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin-bottom: 40px;
+        padding: 0 4px;
+      }
+
+      .btn-download,
+      .btn-secondary {
+        justify-content: center;
+        width: 100%;
+        padding: 14px 20px;
+      }
+
+      .hero-visual-wrap {
+        padding: 0 16px;
+      }
+
+      /* SECTIONS */
+      .section {
+        padding: 64px 20px;
+      }
+
+      .section-sm {
+        padding: 48px 20px;
+      }
+
+      .section-heading {
+        font-size: clamp(30px, 8vw, 44px);
+      }
+
+      .section-body {
+        font-size: 15px;
+        max-width: 100%;
+      }
+
+      /* ── BENTO: single column ── */
+      .bento {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 36px;
+      }
+
+      /* Reset all fixed heights and column spans */
+      .bc-1,
+      .bc-2,
+      .bc-3,
+      .bc-7,
+      .bc-8,
+      .bc-9 {
+        grid-column: span 1;
+        height: auto;
+        min-height: unset;
+        overflow: visible;
+      }
+
+      /* ── Split cards: stack vertically ── */
+      .bc-split-inner {
+        flex-direction: column;
+        height: auto;
+      }
+
+      /* Text portion of split cards */
+      .bc-1 .bc-split-text,
+      .bc-2 .bc-split-text {
+        flex: unset;
+        max-width: 100%;
+        padding: 28px 24px 20px;
+      }
+
+      /* Video visual portion of split cards */
+      .bc-split-visual-1,
+      .bc-split-visual-2 {
+        flex: unset;
+        max-width: 100%;
+        width: 100%;
+        padding: 0 20px 24px;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Window mockup inside visuals — full width */
+      .bc-split-visual-1 .window-mockup,
+      .bc-split-visual-2 .window-mockup {
+        width: 100%;
+        max-width: 100%;
+        max-height: none;
+        aspect-ratio: 16/9;
+        border-radius: 10px;
+      }
+
+      /* Non-split cards: normal padding */
+      .bento-card-inner {
+        padding: 24px 22px 20px;
+      }
+
+      .bento-card-title {
+        font-size: 20px;
+      }
+
+      /* Pin mode card — make kbd keys visible */
+      .bc-9 .bento-card-inner {
+        gap: 20px;
+      }
+
+      /* Constructor pills — smaller on mobile */
+      .bc-constructors-strip {
+        margin-top: 14px;
+        gap: 5px;
+      }
+
+      .bc-constructor-pill {
+        padding: 4px 9px 4px 6px;
+      }
+
+      .bc-c-name {
+        font-size: 10px;
+      }
+
+      /* Drag list */
+      .bc-drag-list {
+        margin-top: 14px;
+      }
+
+      /* ── SHORTCUTS ── */
+      .shortcuts-list {
+        grid-template-columns: 1fr;
+        margin-top: 36px;
+      }
+
+      .shortcut-row {
+        padding: 14px 18px;
+        gap: 12px;
+      }
+
+      .shortcut-action {
+        font-size: 13px;
+      }
+
+      /* ── INSTALL ── */
+      .install-section {
+        padding: 80px 0;
+      }
+
+      .install-inner {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 0 20px;
+      }
+
+      /* On mobile: show steps first, then CTA below */
+      .install-inner {
+        display: flex;
+        flex-direction: column-reverse;
+      }
+
+      .install-cta-area {
+        gap: 16px;
+      }
+
+      .btn-download-white {
+        width: 100%;
+        justify-content: center;
+        padding: 15px 24px;
+        font-size: 14px;
+      }
+
+      .install-step {
+        padding: 18px 18px;
+        gap: 14px;
+      }
+
+      .install-step-title {
+        font-size: 13.5px;
+      }
+
+      .install-step-desc {
+        font-size: 12px;
+      }
+
+      /* ── OPEN SOURCE ── */
+      .oss-section {
+        padding: 72px 20px;
+      }
+
+      .oss-inner .section-body {
+        font-size: 14px;
+      }
+
+      .oss-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .oss-actions .btn-download,
+      .oss-actions .btn-secondary {
+        justify-content: center;
+        width: 100%;
+      }
+
+      /* ── FEEDBACK / CONTACT ── */
+      .feedback-section {
+        padding: 64px 20px;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 36px;
+      }
+
+      .contact-card {
+        padding: 28px 24px;
+      }
+
+      .contact-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        margin-bottom: 18px;
+      }
+
+      .contact-title {
+        font-size: 18px;
+      }
+
+      .contact-desc {
+        font-size: 13px;
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        padding: 28px 20px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+
+      .footer-left {
+        flex-direction: column;
+        gap: 14px;
+        align-items: center;
+      }
+
+      .footer-links {
+        gap: 16px;
+      }
+    }
+
+    /* ── Small phones: 390px and below ── */
+    @media (max-width: 390px) {
+
+      .hero-title {
+        font-size: 34px;
+        letter-spacing: -0.8px;
+      }
+
+      .section-heading {
+        font-size: 28px;
+      }
+
+      .btn-download,
+      .btn-secondary {
+        font-size: 13px;
+        padding: 13px 16px;
+      }
+
+      .bento-card-title {
+        font-size: 18px;
+      }
+
+      .bc-constructor-pill {
+        padding: 3px 8px 3px 5px;
+      }
+
+      .bc-c-name {
+        font-size: 9.5px;
+      }
+
+      .shortcut-action {
+        font-size: 12px;
+      }
+
+      kbd {
+        font-size: 9px;
+        padding: 2px 5px;
+      }
+    }
+
+    /* ── Touch: active states replace hover ── */
+    @media (hover: none) {
+      .bento-card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-download:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+      }
+
+      .btn-secondary:active {
+        background: var(--off);
+      }
+
+      .contact-card:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .contact-card:active {
+        background: var(--white);
+        border-color: var(--dim);
+      }
+
+      .contact-card.dark-card:active {
+        background: #111;
+      }
     }
   </style>
 </head>
@@ -1169,8 +1510,6 @@ width: auto;
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-   
-
     <h1 class="hero-title reveal reveal-d1">
       Your tasks <em>racing</em><br>
       from your notch.
@@ -1192,7 +1531,6 @@ width: auto;
   <div class="hero-visual-wrap reveal reveal-d3">
     <div class="hero-visual-glow"></div>
     <div class="hero-visual-frame">
-      <!-- macOS Title Bar -->
       <div class="macos-titlebar">
         <div class="macos-dot close"></div>
         <div class="macos-dot min"></div>
@@ -1323,7 +1661,7 @@ width: auto;
       </div>
     </div>
 
-      <div class="bento-card bc-2 reveal reveal-d2">
+    <div class="bento-card bc-2 reveal reveal-d2">
       <div class="bento-card-inner bc-split-inner">
         <div class="bc-split-text">
           <div class="bento-card-label">Visual progress</div>
@@ -1349,9 +1687,6 @@ width: auto;
 </section>
 
 <div class="section-divider"></div>
-
-
-
 
 <!-- INSTALL -->
 <div class="install-section" id="install">
@@ -1386,21 +1721,20 @@ width: auto;
           <div class="install-step-desc">Standard macOS install. Takes about five seconds.</div>
         </div>
       </div>
-     
       <div class="install-step">
-  <div class="install-step-num">3</div>
-  <div>
-    <div class="install-step-title">Allow Camber in Privacy & Security (Imp)</div>
-    <div class="install-step-desc">macOS may block the app on first launch. Go to System Settings → Privacy & Security, scroll down, and click "Open Anyway" next to Camber. You'll only need to do this once.</div>
-  </div>
-</div>
-<div class="install-step">
-  <div class="install-step-num">4</div>
-  <div>
-    <div class="install-step-title">Hover the notch</div>
-    <div class="install-step-desc">Your pit lane is ready. Start your engines.</div>
-  </div>
-</div>
+        <div class="install-step-num">3</div>
+        <div>
+          <div class="install-step-title">Allow Camber in Privacy & Security (Imp)</div>
+          <div class="install-step-desc">macOS may block the app on first launch. Go to System Settings → Privacy & Security, scroll down, and click "Open Anyway" next to Camber. You'll only need to do this once.</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">4</div>
+        <div>
+          <div class="install-step-title">Hover the notch</div>
+          <div class="install-step-desc">Your pit lane is ready. Start your engines.</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1467,7 +1801,6 @@ width: auto;
   </div>
 
   <div class="contact-grid">
-    <!-- Feedback Form Card -->
     <a href="https://forms.gle/zXyr1iSu3tzUMTTh9" target="_blank" class="contact-card reveal reveal-d1">
       <div class="contact-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -1476,16 +1809,13 @@ width: auto;
       <div class="contact-desc">Share your thoughts on Camber. Got a feature idea or found a bug? Let us know.</div>
     </a>
 
-    <!-- GitHub Card -->
-     <a href="mailto:puneet.2024@nst.rishihood.edu.in" class="contact-card dark-card reveal reveal-d2">
+    <a href="mailto:puneet.2024@nst.rishihood.edu.in" class="contact-card dark-card reveal reveal-d2">
       <div class="contact-icon">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
       </div>
       <div class="contact-title">Email Us</div>
       <div class="contact-desc">Reach out directly for support, inquiries, or just to say hi. We reply fast!</div>
     </a>
-
-    <!-- Email Card -->
 
     <a href="https://github.com/puneetk0/camber" target="_blank" rel="noopener" class="contact-card reveal reveal-d3">
       <div class="contact-icon">
@@ -1494,7 +1824,6 @@ width: auto;
       <div class="contact-title">GitHub</div>
       <div class="contact-desc">Explore the codebase, file issues, browse pull requests, and contribute safely.</div>
     </a>
-   
   </div>
 </section>
 
@@ -1521,24 +1850,21 @@ width: auto;
 <script>
   // ── Scroll reveal ──
   const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.05, rootMargin: '0px 0px -24px 0px' });
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: '0px 0px -24px 0px' });
 
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
   // ── Nav scroll ──
   const nav = document.getElementById('main-nav');
   window.addEventListener('scroll', () => {
     nav.style.borderBottomColor = window.scrollY > 20 ? 'var(--mid)' : 'transparent';
   }, { passive: true });
-
-
-
 </script>
 
 </body>
