@@ -1091,21 +1091,21 @@ width: auto;
     .footer-right a:hover { color: var(--black); }
 
     /* ─────────────── ANIMATIONS ─────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.65s cubic-bezier(0.25,1,0.5,1), transform 0.65s cubic-bezier(0.25,1,0.5,1);
-    }
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
-    .reveal-d1 { transition-delay: 0.08s; }
-    .reveal-d2 { transition-delay: 0.16s; }
-    .reveal-d3 { transition-delay: 0.24s; }
-    .reveal-d4 { transition-delay: 0.32s; }
+.reveal-d1 { transition-delay: 0.06s; }
+.reveal-d2 { transition-delay: 0.12s; }
+.reveal-d3 { transition-delay: 0.18s; }
+.reveal-d4 { transition-delay: 0.24s; }
 
     /* Section transition line */
     .red-rule {
@@ -1351,6 +1351,60 @@ width: auto;
 <div class="section-divider"></div>
 
 
+
+
+<!-- INSTALL -->
+<div class="install-section" id="install">
+  <div class="install-inner">
+    <div class="install-cta-area reveal">
+      <div>
+        <div class="section-label">Installation</div>
+        <div class="red-rule" style="background:rgba(232,0,45,0.6);"></div>
+        <h2 class="section-heading">Download.<br>Drag. <em>Race.</em></h2>
+        <p class="section-body" style="margin-top:20px;">Ships as a universal binary. Runs natively on Apple Silicon and Intel. No account, no wizard, no fuss.</p>
+      </div>
+      <div>
+        <a href="https://github.com/puneetk0/camber/releases/download/V1.0.0/Camber.dmg" class="btn-download-white" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 8l3 3 3-3M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Download for macOS
+        </a>
+      </div>
+    </div>
+
+    <div class="install-steps reveal reveal-d2">
+      <div class="install-step">
+        <div class="install-step-num">1</div>
+        <div>
+          <div class="install-step-title">Download from GitHub Releases</div>
+          <div class="install-step-desc">Grab the latest .dmg from the releases page — always free, always open source.</div>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="install-step-num">2</div>
+        <div>
+          <div class="install-step-title">Open DMG and drag to Applications</div>
+          <div class="install-step-desc">Standard macOS install. Takes about five seconds.</div>
+        </div>
+      </div>
+     
+      <div class="install-step">
+  <div class="install-step-num">3</div>
+  <div>
+    <div class="install-step-title">Allow Camber in Privacy & Security (Imp)</div>
+    <div class="install-step-desc">macOS may block the app on first launch. Go to System Settings → Privacy & Security, scroll down, and click "Open Anyway" next to Camber. You'll only need to do this once.</div>
+  </div>
+</div>
+<div class="install-step">
+  <div class="install-step-num">4</div>
+  <div>
+    <div class="install-step-title">Hover the notch</div>
+    <div class="install-step-desc">Your pit lane is ready. Start your engines.</div>
+  </div>
+</div>
+    </div>
+  </div>
+</div>
+
 <!-- SHORTCUTS -->
 <section class="section" id="shortcuts">
   <div class="reveal">
@@ -1386,57 +1440,6 @@ width: auto;
     </div>
   </div>
 </section>
-
-<!-- INSTALL -->
-<div class="install-section" id="install">
-  <div class="install-inner">
-    <div class="install-cta-area reveal">
-      <div>
-        <div class="section-label">Installation</div>
-        <div class="red-rule" style="background:rgba(232,0,45,0.6);"></div>
-        <h2 class="section-heading">Download.<br>Drag. <em>Race.</em></h2>
-        <p class="section-body" style="margin-top:20px;">Ships as a universal binary. Runs natively on Apple Silicon and Intel. No account, no wizard, no fuss.</p>
-      </div>
-      <div>
-        <a href="https://github.com/puneetk0/camber/releases/download/V1.0.0/Camber.dmg" class="btn-download-white" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 8l3 3 3-3M2 13h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Download for macOS
-        </a>
-      </div>
-    </div>
-
-    <div class="install-steps reveal reveal-d2">
-      <div class="install-step">
-        <div class="install-step-num">1</div>
-        <div>
-          <div class="install-step-title">Download from GitHub Releases</div>
-          <div class="install-step-desc">Grab the latest .dmg from the releases page — always free, always open source.</div>
-        </div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">2</div>
-        <div>
-          <div class="install-step-title">Open DMG and drag to Applications</div>
-          <div class="install-step-desc">Standard macOS install. Takes about five seconds.</div>
-        </div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">3</div>
-        <div>
-          <div class="install-step-title">First launch: right-click → Open</div>
-          <div class="install-step-desc">This is a one-time step for unsigned apps. After that, Camber opens normally every time.</div>
-        </div>
-      </div>
-      <div class="install-step">
-        <div class="install-step-num">4</div>
-        <div>
-          <div class="install-step-title">Hover the notch</div>
-          <div class="install-step-desc">Your pit lane is ready. Start your engines.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- OPEN SOURCE -->
 <div class="oss-section">
@@ -1518,14 +1521,15 @@ width: auto;
 <script>
   // ── Scroll reveal ──
   const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -24px 0px' });
 
-  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
   // ── Nav scroll ──
   const nav = document.getElementById('main-nav');
